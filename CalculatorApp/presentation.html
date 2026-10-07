@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mini Calculator App in Java - Project Presentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  @page {
+    size: 297mm 210mm;
+    margin: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f1f5f9;
+    color: #1e293b;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .slide {
+    width: 297mm;
+    height: 210mm;
+    page-break-after: always;
+    page-break-inside: avoid;
+    padding: 20mm 24mm;
+    position: relative;
+    background: radial-gradient(circle at 92% 8%, rgba(37, 99, 235, 0.07), transparent 40%),
+                radial-gradient(circle at 8% 92%, rgba(79, 70, 229, 0.06), transparent 40%),
+                #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  /* Slide Header */
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+
+  .slide-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #1d4ed8;
+    background: #dbeafe;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #bfdbfe;
+  }
+
+  .slide-counter {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .slide-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.6px;
+    margin-bottom: 4px;
+  }
+
+  .slide-subtitle {
+    font-size: 13.5px;
+    color: #64748b;
+    margin-bottom: 16px;
+  }
+
+  .slide-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* Footer */
+  .slide-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 10px;
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  /* Title Slide Specifics */
+  .title-slide {
+    justify-content: center;
+    background: radial-gradient(circle at 85% 15%, rgba(37, 99, 235, 0.12), transparent 45%),
+                radial-gradient(circle at 15% 85%, rgba(14, 165, 233, 0.10), transparent 45%),
+                linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  }
+
+  .title-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #1d4ed8, #4f46e5);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    width: fit-content;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  }
+
+  .main-title {
+    font-size: 46px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+    color: #0f172a;
+    margin-bottom: 14px;
+  }
+
+  .main-title span {
+    background: linear-gradient(135deg, #1d4ed8 0%, #0284c7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .main-desc {
+    font-size: 17px;
+    color: #475569;
+    max-width: 820px;
+    line-height: 1.55;
+    margin-bottom: 32px;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    max-width: 880px;
+  }
+
+  .meta-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 14px 18px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    border-top: 3px solid #2563eb;
+  }
+
+  .meta-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #64748b;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+
+  .meta-val {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  /* Grid Layouts */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    height: 100%;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    height: 100%;
+  }
+
+  .card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  }
+
+  .card-highlight {
+    border-color: #93c5fd;
+    background: #f8fafc;
+    border-top: 4px solid #2563eb;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.08);
+  }
+
+  .card-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 12px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #dbeafe;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+  }
+
+  .card-text {
+    font-size: 12.5px;
+    color: #475569;
+    line-height: 1.55;
+  }
+
+  ul.feature-list {
+    list-style: none;
+    margin-top: 8px;
+  }
+
+  ul.feature-list li {
+    font-size: 12.5px;
+    color: #334155;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.45;
+  }
+
+  ul.feature-list li::before {
+    content: "✓";
+    color: #2563eb;
+    font-weight: 800;
+    margin-right: 10px;
+  }
+
+  /* Code Block Styling */
+  .code-container {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #f1f5f9;
+    line-height: 1.55;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+  }
+
+  .code-keyword { color: #f43f5e; font-weight: 600; }
+  .code-type { color: #38bdf8; font-weight: 600; }
+  .code-method { color: #a5b4fc; }
+  .code-string { color: #4ade80; }
+  .code-comment { color: #94a3b8; font-style: italic; }
+  .code-number { color: #fbbf24; }
+
+  /* Pill badges */
+  .pill {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+  }
+  .pill-blue { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+  .pill-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+  .pill-purple { background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+  .pill-red { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+  /* Diagram styles */
+  .flow-box {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 9px 12px;
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #1e293b;
+  }
+  .arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2563eb;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .table-custom th {
+    text-align: left;
+    padding: 9px 12px;
+    background: #f1f5f9;
+    color: #1e40af;
+    font-weight: 700;
+    border-bottom: 2px solid #cbd5e1;
+  }
+  .table-custom td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+  }
+  .table-custom tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+
+  .key-badge {
+    background: #e2e8f0;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title Slide -->
+<div class="slide title-slide">
+  <div>
+    <div class="title-badge">Java Desktop Application</div>
+    <h1 class="main-title">Mini Calculator App<br><span>Technical Presentation</span></h1>
+    <p class="main-desc">
+      A robust, event-driven desktop calculator engineered with Java Swing and AWT. Features real-time calculation history, single-digit erase precision, keyboard shortcuts, and full cross-version bytecode compatibility.
+    </p>
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="meta-label">Core Platform</div>
+        <div class="meta-val">Java (JDK 8 – 21+)</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">GUI Framework</div>
+        <div class="meta-val">Java Swing / AWT</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">Architecture</div>
+        <div class="meta-val">Event-Driven State Engine</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">Interfaces</div>
+        <div class="meta-val">Modern GUI &amp; CLI Mode</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>Mini Calculator Presentation Deck • Professional Edition</span>
+    <span>Slide 01 / 07</span>
+  </div>
+</div>
+
+<!-- SLIDE 2: Objectives & Features -->
+<div class="slide">
+  <div class="slide-header">
+    <span class="slide-tag">Project Overview</span>
+    <span class="slide-counter">02 / 07</span>
+  </div>
+  <h2 class="slide-title">System Objectives &amp; Core Highlights</h2>
+  <div class="slide-subtitle">Delivering an intuitive, lightweight desktop application with zero third-party dependencies</div>
+  
+  <div class="slide-content">
+    <div class="grid-3">
+      <div class="card card-highlight">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Dual Interface Design</div>
+        <div class="card-text">
+          Offers two distinct user experiences:
+          <ul class="feature-list">
+            <li><strong>Swing GUI:</strong> Sleek dark-mode interface with high-contrast buttons and responsive hover states.</li>
+            <li><strong>CLI Mode:</strong> Lightweight, terminal-based interactive loop for terminal environments.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">⌫</div>
+        <div class="card-title">Precision Editing &amp; Erase</div>
+        <div class="card-text">
+          Solves common typing mistakes without resetting state:
+          <ul class="feature-list">
+            <li><strong>Single-Digit Erase (<code>⌫</code>):</strong> Backspaces the last typed digit sequentially.</li>
+            <li><strong>Full Clear (<code>C</code>):</strong> Resets operands, operator, and history labels completely.</li>
+            <li><strong>Sign Toggle (<code>±</code>):</strong> Inverts sign with instant visual feedback.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">⌨️</div>
+        <div class="card-title">Seamless Keyboard Input</div>
+        <div class="card-text">
+          Full physical keyboard synchronization:
+          <ul class="feature-list">
+            <li>Type numbers directly from the Numpad or top row.</li>
+            <li>Operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>) bound to matching keys.</li>
+            <li><code>Enter</code> triggers calculation; <code>Backspace</code> erases a single digit.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Mini Calculator App • Java Swing Architecture</span>
+    <span>Zero External Dependencies Required</span>
+  </div>
+</div>
+
+<!-- SLIDE 3: Architecture & UI Breakdown -->
+<div class="slide">
+  <div class="slide-header">
+    <span class="slide-tag">Architecture &amp; Layout</span>
+    <span class="slide-counter">03 / 07</span>
+  </div>
+  <h2 class="slide-title">User Interface &amp; Component Hierarchy</h2>
+  <div class="slide-subtitle">Constructed using hierarchical Swing containers and modern visual design principles</div>
+
+  <div class="slide-content">
+    <div class="grid-2">
+      <!-- Left: Component Hierarchy -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom: 14px;">Container Structure (JFrame)</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div class="flow-box" style="background: #eff6ff; border-color: #2563eb; color: #1e40af;">
+            <strong>JFrame</strong> (340 × 480 px, Borderless Dark Canvas)
+          </div>
+          <div class="arrow">↓</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="flow-box">
+              <strong style="color: #0284c7;">Display Panel (NORTH)</strong><br>
+              <span style="font-size: 10px; color: #64748b;">BoxLayout (Y_AXIS)</span>
+              <div style="margin-top: 6px; font-size: 10px; text-align: left; padding: 5px 7px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 4px;">
+                • History Label (14pt, Muted)<br>
+                • Display Field (36pt Bold, Right-aligned)
+              </div>
+            </div>
+            <div class="flow-box">
+              <strong style="color: #16a34a;">Button Panel (CENTER)</strong><br>
+              <span style="font-size: 10px; color: #64748b;">GridLayout (5 Rows × 4 Columns)</span>
+              <div style="margin-top: 6px; font-size: 10px; text-align: left; padding: 5px 7px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 4px;">
+                • 20 High-contrast keys<br>
+                • Color-coded action buttons<br>
+                • Dynamic mouse hover listeners
+              </div>
+            </div>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="flow-box" style="background: #fdf4ff; border-color: #c084fc; color: #7e22ce;">
+            <strong>Event Listeners</strong>: ActionListener (Mouse Clicks) + KeyListener (Keyboard Events)
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Color Palette & Visual Spec -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom: 12px;">Visual Theme &amp; Component Roles</div>
+        <table class="table-custom">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Color Spec</th>
+              <th>Component Usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Frame Canvas</strong></td>
+              <td><code>#1C2128</code> (Slate Dark)</td>
+              <td>Window canvas &amp; display frame</td>
+            </tr>
+            <tr>
+              <td><strong>Action / Equals</strong></td>
+              <td><code>#2EA043</code> (Vibrant Green)</td>
+              <td>Result evaluation button (<code>=</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Arithmetic Ops</strong></td>
+              <td><code>#388BFD</code> (Bright Blue)</td>
+              <td><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> operators</td>
+            </tr>
+            <tr>
+              <td><strong>Function Keys</strong></td>
+              <td><code>#2D333B</code> (Medium Dark)</td>
+              <td>Clear (<code>C</code>), Erase (<code>⌫</code>), Mod (<code>%</code>), Sign (<code>±</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Numeric Keys</strong></td>
+              <td><code>#22272E</code> (Carbon Dark)</td>
+              <td>Digits 0–9 and decimal separator (<code>.</code>)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Mini Calculator App • Component Breakdown</span>
+    <span>Modern GitHub Dark Theme Inspiration</span>
+  </div>
+</div>
+
+<!-- SLIDE 4: Single Digit Erase Implementation -->
+<div class="slide">
+  <div class="slide-header">
+    <span class="slide-tag">Feature Spotlight</span>
+    <span class="slide-counter">04 / 07</span>
+  </div>
+  <h2 class="slide-title">Single-Digit Erase (<code>⌫</code>) Technical Implementation</h2>
+  <div class="slide-subtitle">Handling complex input boundary conditions, string mutations, and state synchronization</div>
+
+  <div class="slide-content">
+    <div class="grid-2">
+      <!-- Code Snippet -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom: 10px;">Backspace Logic (<code>Calculator.java</code>)</div>
+        <div class="code-container">
+<span class="code-keyword">private void</span> <span class="code-method">handleBackspace</span>() {
+    <span class="code-type">String</span> text = displayField.<span class="code-method">getText</span>();
+
+    <span class="code-comment">// 1. Handle error state or zero</span>
+    <span class="code-keyword">if</span> (text.<span class="code-method">startsWith</span>(<span class="code-string">"Error"</span>) || text.<span class="code-method">equals</span>(<span class="code-string">"0"</span>)) {
+        displayField.<span class="code-method">setText</span>(<span class="code-string">"0"</span>);
+        startNewNumber = <span class="code-keyword">true</span>;
+        <span class="code-keyword">return</span>;
+    }
+
+    <span class="code-comment">// 2. Multi-character deletion</span>
+    <span class="code-keyword">if</span> (text.<span class="code-method">length</span>() &gt; <span class="code-number">1</span>) {
+        <span class="code-type">String</span> next = text.<span class="code-method">substring</span>(<span class="code-number">0</span>, text.<span class="code-method">length</span>() - <span class="code-number">1</span>);
+        <span class="code-comment">// If only negative sign or blank remains</span>
+        <span class="code-keyword">if</span> (next.<span class="code-method">equals</span>(<span class="code-string">"-"</span>) || next.<span class="code-method">equals</span>(<span class="code-string">"-0"</span>)) {
+            displayField.<span class="code-method">setText</span>(<span class="code-string">"0"</span>);
+            startNewNumber = <span class="code-keyword">true</span>;
+        } <span class="code-keyword">else</span> {
+            displayField.<span class="code-method">setText</span>(next);
+            startNewNumber = <span class="code-keyword">false</span>;
+        }
+    } <span class="code-keyword">else</span> {
+        <span class="code-comment">// 3. Single digit remaining -> reset to "0"</span>
+        displayField.<span class="code-method">setText</span>(<span class="code-string">"0"</span>);
+        startNewNumber = <span class="code-keyword">true</span>;
+    }
+}
+        </div>
+      </div>
+
+      <!-- Edge Cases & Behavior -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom: 12px;">Defensive Edge-Case Safeguards</div>
+        <table class="table-custom">
+          <thead>
+            <tr>
+              <th>Current Buffer</th>
+              <th>Action</th>
+              <th>Resulting Buffer</th>
+              <th>Internal State</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>"5432"</code></td>
+              <td>Press <code>⌫</code></td>
+              <td><code>"543"</code></td>
+              <td>Active input continues</td>
+            </tr>
+            <tr>
+              <td><code>"7"</code></td>
+              <td>Press <code>⌫</code></td>
+              <td><code>"0"</code></td>
+              <td>Resets to fresh number ready</td>
+            </tr>
+            <tr>
+              <td><code>"-5"</code></td>
+              <td>Press <code>⌫</code></td>
+              <td><code>"0"</code></td>
+              <td>Prevents invalid stray <code>"-"</code></td>
+            </tr>
+            <tr>
+              <td><code>"12.5"</code></td>
+              <td>Press <code>⌫</code></td>
+              <td><code>"12."</code></td>
+              <td>Valid decimal stream kept</td>
+            </tr>
+            <tr>
+              <td><code>"Error: Div by 0"</code></td>
+              <td>Press <code>⌫</code></td>
+              <td><code>"0"</code></td>
+              <td>Recovers safely to clean state</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div style="margin-top: 14px; padding: 10px; background: #eff6ff; border-left: 3px solid #2563eb; border-radius: 4px; font-size: 11px; color: #475569;">
+          <strong style="color: #1d4ed8;">Font Compatibility Note:</strong> The <code>⌫</code> symbol uses <code>Segoe UI Symbol</code> / <code>SansSerif</code> fallback font rendering to guarantee clear visual display across all Windows, macOS, and Linux JVMs without missing glyph boxes.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Mini Calculator App • Logic Walkthrough</span>
+    <span>Defensive Programming &amp; State Validation</span>
+  </div>
+</div>
+
+<!-- SLIDE 5: Diagnostics & Troubleshooting Case Study -->
+<div class="slide">
+  <div class="slide-header">
+    <span class="slide-tag">Engineering Case Study</span>
+    <span class="slide-counter">05 / 07</span>
+  </div>
+  <h2 class="slide-title">Cross-Version Compatibility Solution</h2>
+  <div class="slide-subtitle">Diagnosing and resolving Java Runtime version disparities across enterprise environments</div>
+
+  <div class="slide-content">
+    <div class="grid-2">
+      <!-- The Problem -->
+      <div class="card" style="border-top: 4px solid #ef4444;">
+        <div class="card-icon" style="background: #fee2e2; color: #dc2626; border-color: #fecaca;">⚠️</div>
+        <div class="card-title" style="color: #b91c1c;">The Issue: Runtime Mismatch</div>
+        <div class="card-text">
+          When executing the app initially, a Windows error popup stated:<br>
+          <strong style="color: #dc2626;">"A Java Exception has occurred."</strong>
+          
+          <div style="margin-top: 10px; background: #0f172a; padding: 10px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #f87171;">
+            UnsupportedClassVersionError: Calculator has been compiled by a more recent version of Java Runtime (class file version 65.0), this version only recognizes up to 52.0
+          </div>
+
+          <ul class="feature-list" style="margin-top: 10px;">
+            <li><strong>Compiler (<code>javac</code>):</strong> Microsoft OpenJDK 21 (bytecode version 65)</li>
+            <li><strong>Runtime (<code>java</code>):</strong> Oracle Java 8 on Windows PATH (bytecode version 52)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- The Solution -->
+      <div class="card" style="border-top: 4px solid #16a34a;">
+        <div class="card-icon" style="background: #dcfce7; color: #16a34a; border-color: #bbf7d0;">✓</div>
+        <div class="card-title" style="color: #15803d;">The Engineering Solution</div>
+        <div class="card-text">
+          We implemented a permanent, multi-tiered cross-compatibility strategy:
+          
+          <div style="margin-top: 10px;">
+            <span class="pill pill-green">Step 1: Target Bytecode Release</span>
+            <div class="code-container" style="font-size: 10.5px; margin: 4px 0 10px 0; background: #0f172a; color: #4ade80;">
+javac --release 8 Calculator.java
+            </div>
+            Forces the Java 21 compiler to emit clean Java 8 (version 52.0) bytecode.
+          </div>
+
+          <div>
+            <span class="pill pill-blue">Step 2: Smart Launcher Script</span>
+            <div style="font-size: 11.5px; color: #475569; line-height: 1.45;">
+              Updated <code>run_gui.bat</code> to autodetect modern JDK paths and fall back to the system environment safely.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Mini Calculator App • JVM Deep Dive</span>
+    <span>Bytecode Target Architecture (Major Version 52.0)</span>
+  </div>
+</div>
+
+<!-- SLIDE 6: Keyboard & Interactive Controls -->
+<div class="slide">
+  <div class="slide-header">
+    <span class="slide-tag">Interaction Design</span>
+    <span class="slide-counter">06 / 07</span>
+  </div>
+  <h2 class="slide-title">Interactive Keymap &amp; Control Reference</h2>
+  <div class="slide-subtitle">Complete mapping of mouse actions and physical keyboard bindings</div>
+
+  <div class="slide-content">
+    <table class="table-custom" style="font-size: 12.5px;">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Button Label</th>
+          <th>Keyboard Shortcut</th>
+          <th>Functional Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Numeric Input</strong></td>
+          <td><code>0</code> – <code>9</code></td>
+          <td><span class="key-badge">0</span> – <span class="key-badge">9</span> (or Numpad)</td>
+          <td>Appends digit to current operand buffer</td>
+        </tr>
+        <tr>
+          <td><strong>Decimal</strong></td>
+          <td><code>.</code></td>
+          <td><span class="key-badge">.</span></td>
+          <td>Appends fractional decimal (guards against multiple dots)</td>
+        </tr>
+        <tr>
+          <td><strong>Single Erase</strong></td>
+          <td><code>⌫</code></td>
+          <td><span class="key-badge">Backspace</span></td>
+          <td>Erases the trailing digit from current number</td>
+        </tr>
+        <tr>
+          <td><strong>Full Reset</strong></td>
+          <td><code>C</code></td>
+          <td><span class="key-badge">Esc</span></td>
+          <td>Clears all calculations, history, and active buffers</td>
+        </tr>
+        <tr>
+          <td><strong>Arithmetic</strong></td>
+          <td><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code></td>
+          <td><span class="key-badge">+</span> <span class="key-badge">-</span> <span class="key-badge">*</span> <span class="key-badge">/</span></td>
+          <td>Commits first operand and sets pending arithmetic operation</td>
+        </tr>
+        <tr>
+          <td><strong>Percentage</strong></td>
+          <td><code>%</code></td>
+          <td><span class="key-badge">%</span></td>
+          <td>Divides current active value by 100 instantly</td>
+        </tr>
+        <tr>
+          <td><strong>Sign Inversion</strong></td>
+          <td><code>±</code></td>
+          <td>Click only</td>
+          <td>Toggles positive and negative sign</td>
+        </tr>
+        <tr>
+          <td><strong>Calculate</strong></td>
+          <td><code>=</code></td>
+          <td><span class="key-badge">Enter</span> or <span class="key-badge">=</span></td>
+          <td>Evaluates the expression and presents formatted result</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="slide-footer">
+    <span>Mini Calculator App • Human-Computer Interaction</span>
+    <span>Dual Input: Full Mouse &amp; Keyboard Parity</span>
+  </div>
+</div>
+
+<!-- SLIDE 7: Summary & Future Roadmap -->
+<div class="slide">
+  <div class="slide-header">
+    <span class="slide-tag">Summary &amp; Future Scope</span>
+    <span class="slide-counter">07 / 07</span>
+  </div>
+  <h2 class="slide-title">Project Summary &amp; Future Roadmap</h2>
+  <div class="slide-subtitle">Key takeaways, competencies demonstrated, and potential expansions</div>
+
+  <div class="slide-content">
+    <div class="grid-2">
+      <!-- Competencies -->
+      <div class="card card-highlight">
+        <div class="card-icon">🏆</div>
+        <div class="card-title">Core Competencies Demonstrated</div>
+        <ul class="feature-list">
+          <li><strong>GUI Architecture:</strong> Component hierarchy, custom styling, border layouts, and dynamic event handling in pure Java.</li>
+          <li><strong>Robust Edge-Case Handling:</strong> Division by zero protection, decimal formatters, string bounds safety.</li>
+          <li><strong>Defensive Engineering:</strong> Cross-version JVM bytecode target optimization and auto-detecting batch launchers.</li>
+          <li><strong>Dual Interface Delivery:</strong> Production-ready Swing GUI alongside terminal CLI alternative.</li>
+        </ul>
+      </div>
+
+      <!-- Roadmap -->
+      <div class="card">
+        <div class="card-icon">🚀</div>
+        <div class="card-title">Future Expansion Roadmap</div>
+        <ul class="feature-list">
+          <li><strong>Scientific Functions:</strong> Trigonometry (sin, cos, tan), Logarithms, Square root (√), Exponentials.</li>
+          <li><strong>Memory Registers:</strong> Standard memory operations (<code>MC</code>, <code>MR</code>, <code>M+</code>, <code>M-</code>).</li>
+          <li><strong>Calculation History Log:</strong> Expandable drawer to view, export, and re-insert previous calculations.</li>
+          <li><strong>Theme Customizer:</strong> Light mode, high-contrast mode, and custom accent selections.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Mini Calculator App • Project Complete</span>
+    <span>Thank you! Questions &amp; Discussion</span>
+  </div>
+</div>
+
+</body>
+</html>
